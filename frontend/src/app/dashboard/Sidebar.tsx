@@ -56,7 +56,7 @@ export default function Sidebar () {
       </h1>
       <div id='sidebar-sections'>
         {SIDEBAR.sections.map(section => (
-          <NavSection section={section} />
+          <NavSection section={section} key={section.title} />
         ))}
       </div>
     </nav>
@@ -77,6 +77,7 @@ function NavSection (props: NavSectionProps) {
           <Link
             href={link.href}
             className='block my-2 px-8 leading-10 rounded-lg  hover:bg-slate-100/30'
+            key={link.text}
           >
             {link.text}
           </Link>

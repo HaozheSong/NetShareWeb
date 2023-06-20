@@ -1,3 +1,5 @@
+import LineChartDemo from './LineChartDemo'
+
 export default function Dashboard () {
   return (
     <div className='px-16 py-8'>
@@ -21,6 +23,10 @@ export default function Dashboard () {
           <div className='text-4xl text-center mb-4'>5</div>
           <div className='text-xl text-center'>GPUs</div>
         </div>
+      </div>
+      <div className='w-100 h-[300px] mt-4'>
+        <h1 className='my-2 text-center text-2xl'>System Load</h1>
+        <LineChartDemo />
       </div>
     </div>
   )
