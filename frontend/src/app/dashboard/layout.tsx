@@ -1,4 +1,4 @@
-import Sidebar, { CONFIG } from './Sidebar'
+import Sidebar, { SIDEBAR } from './Sidebar'
 
 export default function DashboardLayout ({
   children
@@ -9,7 +9,8 @@ export default function DashboardLayout ({
     <>
       <Sidebar />
       <main
-        className={`ml-[${CONFIG.width}px] h-screen bg-slate-100 text-slate-950`}
+        className='h-screen bg-slate-50 text-slate-950'
+        style={{ marginLeft: `${SIDEBAR.width}px` }}
       >
         {children}
       </main>

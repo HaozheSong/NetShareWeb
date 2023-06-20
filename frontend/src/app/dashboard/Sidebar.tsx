@@ -11,7 +11,7 @@ interface SidebarSection {
   links: Array<{ text: string; href: string }>
 }
 
-export const CONFIG = {
+export const SIDEBAR = {
   width: 300,
   title: 'NetShare',
   sections: [
@@ -46,19 +46,20 @@ export const CONFIG = {
 
 export default function Sidebar () {
   return (
-    <div
-      className={`w-[${CONFIG.width}px] h-screen fixed bg-slate-800 text-slate-50 p-4`}
+    <nav
+      className='h-screen fixed bg-slate-800 text-slate-50 p-4 overflow-auto'
+      style={{ width: `${SIDEBAR.width}px` }}
       id='sidebar'
     >
-      <h1 className='text-center text-2xl mb-8' id='sidebar-title'>
+      <h1 className='text-center text-2xl mb-6' id='sidebar-title'>
         NetShare
       </h1>
       <div id='sidebar-sections'>
-        {CONFIG.sections.map(section => (
+        {SIDEBAR.sections.map(section => (
           <NavSection section={section} />
         ))}
       </div>
-    </div>
+    </nav>
   )
 }
 
@@ -69,13 +70,13 @@ interface NavSectionProps {
 function NavSection (props: NavSectionProps) {
   const section = props.section
   return (
-    <section className='my-4'>
-      <h2 className='my-4'>{section.title}</h2>
+    <section className='my-2'>
+      <h2 className='my-2'>{section.title}</h2>
       <div id='sidebar-section-links'>
         {section.links.map(link => (
           <Link
             href={link.href}
-            className='block my-4 px-8 leading-10 rounded-lg  hover:bg-slate-100/30'
+            className='block my-2 px-8 leading-10 rounded-lg  hover:bg-slate-100/30'
           >
             {link.text}
           </Link>
