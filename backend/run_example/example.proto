@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+service RunExample {
+    rpc Start(Example) returns(Status){}
+    rpc QueryStatus(Example) returns(Status){}
+}
+
+message Example {
+    int32 example_id = 1;
+    string example_name = 2;
+}
+
+message Status {
+    int32 example_id = 1;
+    bool is_completed = 2;
+    string message = 3;
+}
