@@ -48,7 +48,7 @@ async function startExample (
   setBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>
 ) {
   setBtnText(<>{spinner}Starting the Example</>)
-  const response = await fetch('/dashboard/run-example', {
+  const response = await fetch('/api/run-example', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({})
