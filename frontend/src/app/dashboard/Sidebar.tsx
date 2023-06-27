@@ -18,7 +18,7 @@ export const SIDEBAR = {
     {
       title: 'GENERAL',
       links: [
-        { text: 'Dashboard', href: '#dashboard' },
+        { text: 'Dashboard', href: '/dashboard' },
         { text: 'Account', href: '#account' }
       ]
     },
@@ -36,6 +36,7 @@ export const SIDEBAR = {
     {
       title: 'ACTIONS',
       links: [
+        { text: 'Run Example', href: '/dashboard/run-example' },
         { text: 'Raw Dataset Upload', href: '#raw-dataset-upload' },
         { text: 'Data Generation', href: '#data-generation' },
         { text: 'Customize Model Upload', href: '#customize-model-upload' }

@@ -2,7 +2,7 @@ import LineChartDemo from './LineChartDemo'
 
 export default function Dashboard () {
   return (
-    <div className='px-16 py-8'>
+    <div>
       <div className='mb-4 p-4 bg-sky-200 text-sky-900 rounded-lg'>
         Welcome to NetShare Dashboard!
       </div>

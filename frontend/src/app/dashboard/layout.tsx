@@ -9,7 +9,7 @@ export default function DashboardLayout ({
     <>
       <Sidebar />
       <main
-        className='h-screen bg-slate-50 text-slate-950'
+        className='h-screen bg-slate-50 text-slate-950 px-16 py-8' 
         style={{ marginLeft: `${SIDEBAR.width}px` }}
       >
         {children}
