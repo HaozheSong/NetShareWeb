@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { use, useState } from 'react'
 
 interface ExampleStatus {
   exampleId: number
@@ -9,14 +9,22 @@ interface ExampleStatus {
 
 export default function runExample () {
   const [btnText, setBtnText] = useState(<>Run netflow Example</>)
+  const [log, setLog] = useState('Logs will be shown here.')
   return (
-    <div>
-      <button
-        className='block w-full py-2 bg-sky-500 hover:bg-sky-600 rounded text-sky-50 text-center'
-        onClick={() => startExample(setBtnText)}
-      >
-        {btnText}
-      </button>
+    <div className='flex flex-col h-full'>
+      <div className='grow-0'>
+        <button
+          className='block w-full py-2 bg-sky-500 hover:bg-sky-600 rounded text-sky-50 text-center'
+          onClick={() => startExample(setBtnText, setLog)}
+        >
+          {btnText}
+        </button>
+      </div>
+      <div className='grow mt-4 overflow-auto'>
+        <pre className='h-full overflow-auto rounded p-4 bg-sky-100'>
+          {log}
+        </pre>
+      </div>
     </div>
   )
 }
@@ -45,7 +53,8 @@ const spinner = (
 )
 
 async function startExample (
-  setBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>
+  setBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>,
+  setLog: React.Dispatch<React.SetStateAction<string>>
 ) {
   setBtnText(<>{spinner}Starting the Example</>)
   const response = await fetch('/api/run-example', {
@@ -56,8 +65,27 @@ async function startExample (
   const data: ExampleStatus = await response.json()
   const exampleId = data.exampleId
   const exampleName = 'netflow'
-  queryStatus(exampleId, exampleName)
+  const message = data.message
+  setLog(message)
+
+  setBtnText(<>{spinner}Query example status</>)
+  let { isCompleted, accumulativeMsg } = await queryStatus(message, setLog)
+  while (!isCompleted) {
+    const status = await queryStatus(accumulativeMsg, setLog)
+    isCompleted = status.isCompleted
+    accumulativeMsg = status.accumulativeMsg
+  }
+
+  setBtnText(<>Completed</>)
 }
 
-function queryStatus (exampleId: number, exampleName: string) {
+async function queryStatus (
+  message: string,
+  setLog: React.Dispatch<React.SetStateAction<string>>
+) {
+  const response = await fetch('/api/run-example')
+  const data: ExampleStatus = await response.json()
+  const accumulativeMsg = message + data.message
+  setLog(accumulativeMsg)
+  return { isCompleted: data.isCompleted, accumulativeMsg: accumulativeMsg }
 }
