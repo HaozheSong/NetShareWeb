@@ -21,7 +21,7 @@ export default function runExample () {
         </button>
       </div>
       <div className='grow mt-4 overflow-auto'>
-        <pre className='h-full overflow-auto rounded p-4 bg-sky-100'>{log}</pre>
+        <pre className='h-full overflow-auto rounded p-4 bg-sky-100 flex flex-col-reverse'>{log}</pre>
       </div>
     </div>
   )
