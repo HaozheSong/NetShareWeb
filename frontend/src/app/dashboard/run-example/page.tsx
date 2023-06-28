@@ -21,9 +21,7 @@ export default function runExample () {
         </button>
       </div>
       <div className='grow mt-4 overflow-auto'>
-        <pre className='h-full overflow-auto rounded p-4 bg-sky-100'>
-          {log}
-        </pre>
+        <pre className='h-full overflow-auto rounded p-4 bg-sky-100'>{log}</pre>
       </div>
     </div>
   )
@@ -63,20 +61,26 @@ async function startExample (
     body: JSON.stringify({})
   })
   const data: ExampleStatus = await response.json()
-  const exampleId = data.exampleId
-  const exampleName = 'netflow'
   const message = data.message
   setLog(message)
 
   setBtnText(<>{spinner}Query example status</>)
-  let { isCompleted, accumulativeMsg } = await queryStatus(message, setLog)
-  while (!isCompleted) {
-    const status = await queryStatus(accumulativeMsg, setLog)
-    isCompleted = status.isCompleted
-    accumulativeMsg = status.accumulativeMsg
-  }
+  queryUntilCompleted(message, setLog, setBtnText)
+}
 
-  setBtnText(<>Completed</>)
+async function queryUntilCompleted (
+  message: string,
+  setLog: React.Dispatch<React.SetStateAction<string>>,
+  setBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>
+) {
+  setTimeout(async () => {
+    let { isCompleted, accumulativeMsg } = await queryStatus(message, setLog)
+    if (!isCompleted) {
+      queryUntilCompleted(accumulativeMsg, setLog, setBtnText)
+    } else {
+      setBtnText(<>Completed</>)
+    }
+  }, 2000)
 }
 
 async function queryStatus (
