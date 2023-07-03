@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rexample.proto\"3\n\x07\x45xample\x12\x12\n\nexample_id\x18\x01 \x01(\x05\x12\x14\n\x0c\x65xample_name\x18\x02 \x01(\t\"C\n\x06Status\x12\x12\n\nexample_id\x18\x01 \x01(\x05\x12\x14\n\x0cis_completed\x18\x02 \x01(\x08\x12\x0f\n\x07message\x18\x03 \x01(\t2N\n\nRunExample\x12\x1c\n\x05Start\x12\x08.Example\x1a\x07.Status\"\x00\x12\"\n\x0bQueryStatus\x12\x08.Example\x1a\x07.Status\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rexample.proto\"O\n\x0fStartingExample\x12\x12\n\nexample_id\x18\x01 \x01(\x03\x12\x14\n\x0c\x65xample_name\x18\x02 \x01(\t\x12\x12\n\ncreated_at\x18\x03 \x01(\t\"R\n\x0eStartingStatus\x12\x12\n\nexample_id\x18\x01 \x01(\x03\x12\x15\n\ris_successful\x18\x02 \x01(\x08\x12\x15\n\rlog_file_name\x18\x03 \x01(\t\"Q\n\x0eRunningExample\x12\x12\n\nexample_id\x18\x01 \x01(\x03\x12\x14\n\x0c\x65xample_name\x18\x02 \x01(\t\x12\x15\n\rlog_file_name\x18\x03 \x01(\t\"\x80\x01\n\rRunningStatus\x12\x12\n\nexample_id\x18\x01 \x01(\x03\x12\x14\n\x0c\x65xample_name\x18\x02 \x01(\t\x12\x14\n\x0cis_completed\x18\x03 \x01(\x08\x12\x15\n\rlog_file_name\x18\x04 \x01(\t\x12\x18\n\x10log_file_content\x18\x05 \x01(\t2l\n\nRunExample\x12,\n\x05Start\x12\x10.StartingExample\x1a\x0f.StartingStatus\"\x00\x12\x30\n\x0bQueryStatus\x12\x0f.RunningExample\x1a\x0e.RunningStatus\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,10 +21,14 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'example_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _globals['_EXAMPLE']._serialized_start=17
-  _globals['_EXAMPLE']._serialized_end=68
-  _globals['_STATUS']._serialized_start=70
-  _globals['_STATUS']._serialized_end=137
-  _globals['_RUNEXAMPLE']._serialized_start=139
-  _globals['_RUNEXAMPLE']._serialized_end=217
+  _globals['_STARTINGEXAMPLE']._serialized_start=17
+  _globals['_STARTINGEXAMPLE']._serialized_end=96
+  _globals['_STARTINGSTATUS']._serialized_start=98
+  _globals['_STARTINGSTATUS']._serialized_end=180
+  _globals['_RUNNINGEXAMPLE']._serialized_start=182
+  _globals['_RUNNINGEXAMPLE']._serialized_end=263
+  _globals['_RUNNINGSTATUS']._serialized_start=266
+  _globals['_RUNNINGSTATUS']._serialized_end=394
+  _globals['_RUNEXAMPLE']._serialized_start=396
+  _globals['_RUNEXAMPLE']._serialized_end=504
 # @@protoc_insertion_point(module_scope)

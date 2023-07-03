@@ -1,17 +1,32 @@
 syntax = "proto3";
 
 service RunExample {
-    rpc Start(Example) returns(Status){}
-    rpc QueryStatus(Example) returns(Status){}
+    rpc Start(StartingExample) returns(StartingStatus){}
+    rpc QueryStatus(RunningExample) returns(RunningStatus){}
 }
 
-message Example {
-    int32 example_id = 1;
+message StartingExample {
+    int64 example_id = 1;
     string example_name = 2;
+    string created_at = 3;
 }
 
-message Status {
-    int32 example_id = 1;
-    bool is_completed = 2;
-    string message = 3;
+message StartingStatus {
+    int64 example_id = 1;
+    bool is_successful = 2;
+    string log_file_name = 3;
+}
+
+message RunningExample{
+    int64 example_id = 1;
+    string example_name = 2;
+    string log_file_name = 3;
+}
+
+message RunningStatus{
+    int64 example_id = 1;
+    string example_name = 2;
+    bool is_completed = 3;
+    string log_file_name = 4;
+    string log_file_content = 5;
 }
