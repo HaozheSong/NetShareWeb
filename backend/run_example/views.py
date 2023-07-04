@@ -85,3 +85,11 @@ def index(request):
                 'logFileContent': grpc_response['log_file_content']
             }
             return JsonResponse(json_response)
+
+
+def get_all_examples(request):
+    json_array = []
+    all_examples = Example.objects.all()
+    for example in all_examples:
+        json_array.append(example.to_json_obj())
+    return JsonResponse(json_array, safe=False)
