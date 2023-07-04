@@ -21,8 +21,8 @@ def index(request):
         example.save()
         if MOCK_TEST:
             resp = {
-                'exampleId': 1,
-                'isSuccessful': True,
+                'example_id': 1,
+                'is_successful': True,
             }
             example.log_file_name = 'test'
             example.is_completed = False
@@ -46,8 +46,8 @@ def index(request):
             example.updated_at = timezone.now()
             example.save()
             json_response = {
-                'exampleId': grpc_response['example_id'],
-                'isSuccessful': grpc_response['is_successful'],
+                'example_id': grpc_response['example_id'],
+                'is_successful': grpc_response['is_successful'],
             }
             return JsonResponse(json_response)
     if request.method == 'GET':
@@ -60,9 +60,9 @@ def index(request):
             return f"Example with exampleID {request.GET['exampleID']} does not exist"
         if MOCK_TEST:
             json_response = {
-                'exampleID': example_id,
-                'isCompleted': example.is_completed,
-                'logFileContent': 'test'
+                'example_id': example_id,
+                'is_completed': example.is_completed,
+                'log_file_content': 'test'
             }
             return JsonResponse(json_response)
         elif not MOCK_TEST:
@@ -80,9 +80,9 @@ def index(request):
                 'log_file_content': query_response.log_file_content
             }
             json_response = {
-                'exampleID': grpc_response['example_id'],
-                'isCompleted': grpc_response['is_completed'],
-                'logFileContent': grpc_response['log_file_content']
+                'example_id': grpc_response['example_id'],
+                'is_completed': grpc_response['is_completed'],
+                'log_file_content': grpc_response['log_file_content']
             }
             return JsonResponse(json_response)
 
