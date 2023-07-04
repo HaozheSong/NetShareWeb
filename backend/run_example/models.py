@@ -11,21 +11,22 @@ class Example(models.Model):
     updated_at = models.DateTimeField(null=True)
     log_file_name = models.CharField(null=True, max_length=256)
 
-    def __str__(self):
-        to_str = ''
+    def get_attr_dict(self):
+        attr_dict = {}
         all_fields = Example._meta.get_fields()
         for field in all_fields:
             attr_key = field.name
             attr_value = getattr(self, attr_key)
-            to_str += f'\n{attr_key}:\t{attr_value}'
+            attr_dict[attr_key] = attr_value
+        return attr_dict
+
+    def __str__(self):
+        to_str = ''
+        attr_dict = self.get_attr_dict()
+        for key, value in attr_dict.items():
+            to_str += f'\n{key}:\t{value}'
         to_str += '\n'
         return to_str
 
     def to_json_obj(self):
-        json_obj = {}
-        all_fields = Example._meta.get_fields()
-        for field in all_fields:
-            attr_key = field.name
-            attr_value = getattr(self, attr_key)
-            json_obj[attr_key] = attr_value
-        return json_obj
+        return self.get_attr_dict()
