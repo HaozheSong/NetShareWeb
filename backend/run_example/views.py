@@ -8,13 +8,7 @@ from . import example_pb2, example_pb2_grpc
 from backend.config import ML_SERVER
 from run_example.models import Example
 
-counter = 0
 MOCK_TEST = False
-
-
-def utc2local(utc_dt):
-    local_dt = timezone.localtime(utc_dt)
-    return local_dt.strftime('%Y-%m-%d_%H-%M-%S')
 
 
 @csrf_exempt
@@ -39,7 +33,7 @@ def index(request):
             grpc_start_request = example_pb2.StartingExample(
                 example_id=example.example_id,
                 example_name=example_name,
-                created_at=utc2local(example.created_at)
+                created_at=example.created_at.strftime('%Y%m%d_%H%M%S')
             )
             grpc_start_response = stub.Start(grpc_start_request)
             grpc_response = {
@@ -57,35 +51,37 @@ def index(request):
             }
             return JsonResponse(json_response)
     if request.method == 'GET':
+        try:
+            example_id = int(request.GET['exampleID'])
+            example = Example.objects.get(pk=example_id)
+        except KeyError:
+            return 'Query param exampleID is required'
+        except Example.DoesNotExist:
+            return f"Example with exampleID {request.GET['exampleID']} does not exist"
         if MOCK_TEST:
-            global counter
-            if counter >= 0:
-                is_completed = False
-                counter += 1
-            else:
-                is_completed = True
-                counter = 0
-            resp = {
-                'exampleId': 1,
-                'isCompleted': is_completed,
-                'message': f'[{counter}] GET request to query example status\n'
+            json_response = {
+                'exampleID': example_id,
+                'isCompleted': example.is_completed,
+                'logFileContent': 'test'
             }
+            return JsonResponse(json_response)
         elif not MOCK_TEST:
-            try:
-                example_id = request.GET['exampleID']
-                example = Example.objects.get(pk=example_id)
-                query_request = example_pb2.Example(
-                    example_id=example_id,
-                    example_name=example.example_name
-                )
-                query_response = stub.QueryStatus(query_request)
-                resp = {
-                    'exampleID': query_response.example_id,
-                    'isCompleted': query_response.is_completed,
-                    'message': query_response.message
-                }
-                return JsonResponse(resp)
-            except KeyError:
-                return 'Query param exampleID is required'
-            except Example.DoesNotExist:
-                return f"Example with exampleID {request.GET['exampleID']} does not exist"
+            query_request = example_pb2.RunningExample(
+                example_id=example_id,
+                example_name=example.example_name,
+                log_file_name=example.log_file_name
+            )
+            query_response = stub.QueryStatus(query_request)
+            grpc_response = {
+                'example_id': query_response.example_id,
+                'example_name': query_response.example_name,
+                'is_completed': query_response.is_completed,
+                'log_file_name': query_response.log_file_name,
+                'log_file_content': query_response.log_file_content
+            }
+            json_response = {
+                'exampleID': grpc_response['example_id'],
+                'isCompleted': grpc_response['is_completed'],
+                'logFileContent': grpc_response['log_file_content']
+            }
+            return JsonResponse(json_response)
