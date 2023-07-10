@@ -52,12 +52,12 @@ def index(request):
             return JsonResponse(json_response)
     if request.method == 'GET':
         try:
-            example_id = int(request.GET['exampleID'])
+            example_id = int(request.GET['example_id'])
             example = Example.objects.get(pk=example_id)
         except KeyError:
-            return 'Query param exampleID is required'
+            return 'Query param example_id is required'
         except Example.DoesNotExist:
-            return f"Example with exampleID {request.GET['exampleID']} does not exist"
+            return f"Example with example_id {request.GET['example_id']} does not exist"
         if MOCK_TEST:
             json_response = {
                 'example_id': example_id,

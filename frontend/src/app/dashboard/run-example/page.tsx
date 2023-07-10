@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 interface Example {
@@ -59,7 +60,14 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
               {example.is_completed ? 'Completed' : 'Running'}
             </td>
             <td className='border border-slate-300'>{example.updated_at}</td>
-            <td className='border border-slate-300'>{example.log_file_name}</td>
+            <td className='border border-slate-300'>
+              <Link
+                href={`/dashboard/run-example/${example.example_id}`}
+                className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
+              >
+                {example.log_file_name}
+              </Link>
+            </td>
           </tr>
         ))}
       </tbody>
