@@ -30,7 +30,7 @@ export default function runExample () {
 async function getAllExamples (
   setAllExamples: React.Dispatch<React.SetStateAction<Example[]>>
 ) {
-  const response = await fetch('/api/run-example/all/')
+  const response = await fetch('/api/run-example/read/all/')
   const allExamples: Array<Example> = await response.json()
   setAllExamples(allExamples)
 }
@@ -62,7 +62,7 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
             <td className='border border-slate-300'>{example.updated_at}</td>
             <td className='border border-slate-300'>
               <Link
-                href={`/dashboard/run-example/${example.example_id}`}
+                href={`/dashboard/run-example/log/${example.example_id}`}
                 className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
               >
                 {example.log_file_name}
@@ -93,7 +93,7 @@ function StartExampleBtn ({
 async function startExample (
   setAllExamples: React.Dispatch<React.SetStateAction<Example[]>>
 ) {
-  const response = await fetch('/api/run-example/', {
+  const response = await fetch('/api/run-example/create/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({})

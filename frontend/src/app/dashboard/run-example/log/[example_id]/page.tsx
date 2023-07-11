@@ -30,7 +30,7 @@ async function getLog (
   example_id: number,
   setLog: React.Dispatch<React.SetStateAction<string>>
 ) {
-  const response = await fetch(`/api/run-example/?example_id=${example_id}`)
+  const response = await fetch(`/api/run-example/read/log/?example_id=${example_id}`)
   const status: Status = await response.json()
   setLog(status.log_file_content)
 }
