@@ -14,21 +14,21 @@ def create_example(request):
     channel = grpc.insecure_channel(f"{ML_SERVER['IP']}:{ML_SERVER['PORT']}")
     stub = example_pb2_grpc.RunExampleStub(channel)
     if request.method == 'POST':
-        example_name = request.POST.get('exampleName', 'netflow')
-        example = Example(example_name=example_name)
+        example_kind = request.POST.get('exampleKind', 'netflow')
+        example = Example(example_kind=example_kind)
         example.save()
         grpc_start_request = example_pb2.StartingExample(
             example_id=example.example_id,
-            example_name=example_name,
+            example_kind=example_kind,
             created_at=example.created_at.strftime('%Y%m%d_%H%M%S')
         )
         grpc_start_response = stub.Start(grpc_start_request)
         grpc_response = {
             'example_id': grpc_start_response.example_id,
-            'is_successful': grpc_start_response.is_successful,
-            'log_file_name': grpc_start_response.log_file_name
+            'example_name': grpc_start_response.example_name,
+            'is_successful': grpc_start_response.is_successful
         }
-        example.log_file_name = grpc_response['log_file_name']
+        example.example_name = grpc_response['example_name']
         example.is_completed = False
         example.updated_at = timezone.now()
         example.save()
@@ -53,7 +53,6 @@ def read_log(request):
     query_request = example_pb2.RunningExample(
         example_id=example_id,
         example_name=example.example_name,
-        log_file_name=example.log_file_name
     )
     query_response = stub.QueryStatus(query_request)
     grpc_response = {

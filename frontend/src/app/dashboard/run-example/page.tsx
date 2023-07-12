@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 
 interface Example {
   example_id: number
+  example_kind: string
   example_name: string
   created_at: string
   is_completed: boolean
   completed_at: string
   updated_at: string
-  log_file_name: string
 }
 
 export default function runExample () {
@@ -41,6 +41,7 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
       <thead>
         <tr>
           <th className='border border-slate-300'>ID</th>
+          <th className='border border-slate-300'>Kind</th>
           <th className='border border-slate-300'>Name</th>
           <th className='border border-slate-300'>Created at</th>
           <th className='border border-slate-300'>Status</th>
@@ -54,6 +55,7 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
             <td className='border border-slate-300 text-center'>
               {example.example_id}
             </td>
+            <td className='border border-slate-300'>{example.example_kind}</td>
             <td className='border border-slate-300'>{example.example_name}</td>
             <td className='border border-slate-300'>{example.created_at}</td>
             <td className='border border-slate-300'>
@@ -65,7 +67,7 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
                 href={`/dashboard/run-example/log/${example.example_id}`}
                 className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
               >
-                {example.log_file_name}
+                view log
               </Link>
             </td>
           </tr>

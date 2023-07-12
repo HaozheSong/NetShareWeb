@@ -7,20 +7,19 @@ service RunExample {
 
 message StartingExample {
     int64 example_id = 1;
-    string example_name = 2;
+    string example_kind = 2;
     string created_at = 3;
 }
 
 message StartingStatus {
     int64 example_id = 1;
-    bool is_successful = 2;
-    string log_file_name = 3;
+    string example_name = 2;
+    bool is_successful = 3;
 }
 
 message RunningExample{
     int64 example_id = 1;
     string example_name = 2;
-    string log_file_name = 3;
 }
 
 message RunningStatus{
