@@ -24,6 +24,11 @@ class RunExampleStub(object):
                 request_serializer=example__pb2.RunningExample.SerializeToString,
                 response_deserializer=example__pb2.RunningStatus.FromString,
                 )
+        self.GetResult = channel.unary_stream(
+                '/RunExample/GetResult',
+                request_serializer=example__pb2.CompletedExample.SerializeToString,
+                response_deserializer=example__pb2.ResultFile.FromString,
+                )
 
 
 class RunExampleServicer(object):
@@ -41,6 +46,12 @@ class RunExampleServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetResult(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_RunExampleServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -53,6 +64,11 @@ def add_RunExampleServicer_to_server(servicer, server):
                     servicer.QueryStatus,
                     request_deserializer=example__pb2.RunningExample.FromString,
                     response_serializer=example__pb2.RunningStatus.SerializeToString,
+            ),
+            'GetResult': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetResult,
+                    request_deserializer=example__pb2.CompletedExample.FromString,
+                    response_serializer=example__pb2.ResultFile.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -95,5 +111,22 @@ class RunExample(object):
         return grpc.experimental.unary_unary(request, target, '/RunExample/QueryStatus',
             example__pb2.RunningExample.SerializeToString,
             example__pb2.RunningStatus.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetResult(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/RunExample/GetResult',
+            example__pb2.CompletedExample.SerializeToString,
+            example__pb2.ResultFile.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -76,3 +79,48 @@ def read_all_examples(request):
     for example in all_examples:
         json_array.append(example.to_json_obj())
     return JsonResponse(json_array, safe=False)
+
+
+@csrf_exempt
+def update(request):
+    if request.method == 'PUT':
+        request_json = json.loads(request.body)
+        example = Example.objects.get(pk=request_json['example_id'])
+        example.is_completed = request_json['is_completed']
+        example.completed_at = timezone.now()
+        example.save()
+
+        results_folder = Path(__file__).parent.joinpath('results')
+        example_result_folder = results_folder.joinpath(example.example_name)
+        example_result_folder.mkdir(parents=True, exist_ok=True)    
+
+        channel = grpc.insecure_channel(
+            f"{ML_SERVER['IP']}:{ML_SERVER['PORT']}"
+        )
+        stub = example_pb2_grpc.RunExampleStub(channel)
+        result_request = example_pb2.CompletedExample(
+            example_id=example.example_id,
+            example_name=example.example_name,
+            example_kind=example.example_kind
+        )
+        for result_response in stub.GetResult(result_request):
+            grpc_response = {
+                'file_name': result_response.file_name,
+                'file_content': result_response.file_content
+            }
+            file_path = example_result_folder.joinpath(
+                grpc_response['file_name']
+            )
+            with open(file_path, 'wb') as file:
+                file.write(grpc_response['file_content'])
+        return 'success'
+
+
+def read_result(request):
+    try:
+        example_id = int(request.GET['example_id'])
+        example = Example.objects.get(pk=example_id)
+    except KeyError:
+        return 'Query param example_id is required'
+    except Example.DoesNotExist:
+        return f"Example with example_id {request.GET['example_id']} does not exist"

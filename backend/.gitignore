@@ -1,4 +1,5 @@
 backend/config.py
+run_example/results
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

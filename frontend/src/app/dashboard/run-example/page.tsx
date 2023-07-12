@@ -47,6 +47,7 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
           <th className='border border-slate-300'>Status</th>
           <th className='border border-slate-300'>Last Updated</th>
           <th className='border border-slate-300'>Log</th>
+          <th className='border border-slate-300'>Result</th>
         </tr>
       </thead>
       <tbody>
@@ -69,6 +70,18 @@ function AllExamplesTable ({ allExamples }: { allExamples: Array<Example> }) {
               >
                 view log
               </Link>
+            </td>
+            <td className='border border-slate-300'>
+              {example.is_completed ? (
+                <Link
+                  href={`/dashboard/run-example/result/${example.example_id}`}
+                  className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
+                >
+                  view result
+                </Link>
+              ) : (
+                'Running'
+              )}
             </td>
           </tr>
         ))}
