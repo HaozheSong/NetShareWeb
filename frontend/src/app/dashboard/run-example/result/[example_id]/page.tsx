@@ -3,6 +3,7 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 
 import Plot from 'react-plotly.js'
+import './result.css'
 
 let example_id: number
 
@@ -44,11 +45,11 @@ async function renderResultJson (
       const metricsElement = (
         <div id={property} key={property}>
           <p>
-            {property}
+            <span className='font-medium mr-4'>{property}</span>
             score:{metricsArray[0]}, best:{metricsArray[1]}, worst:
             {metricsArray[2]}
           </p>
-          <Plot data={imageJson['data']} layout={imageJson['layout']}/>
+          <Plot data={imageJson['data']} layout={imageJson['layout']} className='plotly-img mb-4'/>
         </div>
       )
       resultJSXElements.push(metricsElement)
