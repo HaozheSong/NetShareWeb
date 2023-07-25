@@ -49,7 +49,15 @@ async function renderResultJson (
             score:{metricsArray[0]}, best:{metricsArray[1]}, worst:
             {metricsArray[2]}
           </p>
-          <Plot data={imageJson['data']} layout={imageJson['layout']} className='plotly-img mb-4'/>
+          {imageJson ? (
+            <Plot
+              data={imageJson['data']}
+              layout={imageJson['layout']}
+              className='plotly-img mb-4'
+            />
+          ) : (
+            ''
+          )}
         </div>
       )
       resultJSXElements.push(metricsElement)
@@ -82,6 +90,10 @@ async function getImageJson (example_id: number, imageHtmlName: string) {
   const response = await fetch(
     `/api/run-example/read/result/?example_id=${example_id}&file_name=${imageHtmlName}.json`
   )
-  const json = await response.json()
-  return json
+  if (response.status != 200) {
+    return null
+  } else {
+    const json = await response.json()
+    return json
+  }
 }

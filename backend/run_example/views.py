@@ -17,7 +17,8 @@ def create_example(request):
     channel = grpc.insecure_channel(f"{ML_SERVER['IP']}:{ML_SERVER['PORT']}")
     stub = example_pb2_grpc.RunExampleStub(channel)
     if request.method == 'POST':
-        example_kind = request.POST.get('exampleKind', 'netflow')
+        request_json = json.loads(request.body)
+        example_kind = request_json.get('example_kind', 'netflow')
         example = Example(example_kind=example_kind)
         example.save()
         grpc_start_request = example_pb2.StartingExample(
@@ -138,4 +139,4 @@ def read_result(request):
         for file in example_result_folder.iterdir():
             if (file.name == file_name):
                 return FileResponse(open(file, 'rb'))
-        return HttpResponse(f'{file_name} does not exist')
+        return HttpResponse(f'{file_name} does not exist', status=404)

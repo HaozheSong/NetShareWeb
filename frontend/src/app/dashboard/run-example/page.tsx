@@ -95,23 +95,38 @@ function StartExampleBtn ({
 }: {
   setAllExamples: React.Dispatch<React.SetStateAction<Example[]>>
 }) {
+  const [exampleKind, setExampleKind] = useState('netflow')
+  const handleSelectExampleKind = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setExampleKind(e.target.value)
+  }
   return (
-    <button
-      className='block w-full my-4 py-2 bg-sky-500 hover:bg-sky-600 rounded text-sky-50 text-center'
-      onClick={() => startExample(setAllExamples)}
-    >
-      Start netflow Example
-    </button>
+    <div className='mt-4 flex space-x-4'>
+      <select
+        value={exampleKind}
+        onChange={handleSelectExampleKind}
+        className='px-3 py-2 rounded bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500'
+      >
+        <option value='netflow'>netflow</option>
+        <option value='integration'>integration</option>
+      </select>
+      <button
+        className='px-4 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50 text-center'
+        onClick={() => startExample(exampleKind, setAllExamples)}
+      >
+        Start Example
+      </button>
+    </div>
   )
 }
 
 async function startExample (
+  exampleKind: string,
   setAllExamples: React.Dispatch<React.SetStateAction<Example[]>>
 ) {
   const response = await fetch('/api/run-example/create/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({})
+    body: JSON.stringify({ example_kind: exampleKind })
   })
   const status = await response.json()
   if (status.is_successful) {
