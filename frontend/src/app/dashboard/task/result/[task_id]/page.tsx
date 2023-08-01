@@ -5,26 +5,24 @@ import { useEffect, useState } from 'react'
 import Plot from 'react-plotly.js'
 import './result.css'
 
-let example_id: number
+let task_id: number
 
-export default function Result ({ params }: { params: { example_id: number } }) {
-  example_id = params.example_id
+export default function Result ({ params }: { params: { task_id: number } }) {
+  task_id = params.task_id
   const [resultJSXElements, setResultJSXElements] = useState(
     [] as Array<JSX.Element>
   )
   useEffect(() => {
-    getResult(example_id, setResultJSXElements)
+    getResult(task_id, setResultJSXElements)
   }, [])
   return <>{resultJSXElements.map(element => element)}</>
 }
 
 async function getResult (
-  example_id: number,
+  task_id: number,
   setResultJSXElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>
 ) {
-  const response = await fetch(
-    `/api/run-example/read/result/?example_id=${example_id}`
-  )
+  const response = await fetch(`/api/task/read/result/?task_id=${task_id}`)
   const resultJson = await response.json()
 
   let resultJSXElements = [] as Array<JSX.Element>
@@ -38,14 +36,20 @@ async function renderResultJson (
   depth: number,
   resultJSXElements: Array<JSX.Element>
 ) {
-  for (const property in resultJson) {
-    if (Array.isArray(resultJson[property])) {
-      const metricsArray = resultJson[property]
-      const imageJson = await getImageJson(example_id, property)
+  for (const key in resultJson) {
+    const value = resultJson[key]
+    if ('scores' in value && 'figure_plotly_json' in value) {
+      const metricsArray = value['scores']
+      let imageJson
+      if (value['figure_plotly_json'] == null) {
+        imageJson = null
+      } else {
+        imageJson = await getImageJson(task_id, value['figure_plotly_json'])
+      }
       const metricsElement = (
-        <div id={property} key={property}>
+        <div id={key} key={key}>
           <p>
-            <span className='font-medium mr-4'>{property}</span>
+            <span className='font-medium mr-4'>{key}</span>
             score:{metricsArray[0]}, best:{metricsArray[1]}, worst:
             {metricsArray[2]}
           </p>
@@ -56,15 +60,15 @@ async function renderResultJson (
               className='plotly-img mb-4'
             />
           ) : (
-            ''
+            <p className='mb-4'>No image</p>
           )}
         </div>
       )
       resultJSXElements.push(metricsElement)
     } else {
-      const headingElement = renderHeadingElement(property, depth)
+      const headingElement = renderHeadingElement(key, depth)
       resultJSXElements.push(headingElement)
-      await renderResultJson(resultJson[property], depth + 1, resultJSXElements)
+      await renderResultJson(resultJson[key], depth + 1, resultJSXElements)
     }
   }
 }
@@ -86,9 +90,9 @@ function renderHeadingElement (text: string, depth: number) {
   )
 }
 
-async function getImageJson (example_id: number, imageHtmlName: string) {
+async function getImageJson (task_id: number, imageJson: string) {
   const response = await fetch(
-    `/api/run-example/read/result/?example_id=${example_id}&file_name=${imageHtmlName}.json`
+    `/api/task/read/result/?task_id=${task_id}&file_name=${imageJson}`
   )
   if (response.status != 200) {
     return null

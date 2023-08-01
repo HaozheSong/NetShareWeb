@@ -2,10 +2,10 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import example_pb2 as example__pb2
+from . import task_pb2 as task__pb2
 
 
-class RunExampleStub(object):
+class TaskStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,27 +14,27 @@ class RunExampleStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Start = channel.unary_unary(
-                '/RunExample/Start',
-                request_serializer=example__pb2.StartingExample.SerializeToString,
-                response_deserializer=example__pb2.StartingStatus.FromString,
+        self.StartTask = channel.stream_unary(
+                '/Task/StartTask',
+                request_serializer=task__pb2.StartingTask.SerializeToString,
+                response_deserializer=task__pb2.StartingStatus.FromString,
                 )
         self.QueryStatus = channel.unary_unary(
-                '/RunExample/QueryStatus',
-                request_serializer=example__pb2.RunningExample.SerializeToString,
-                response_deserializer=example__pb2.RunningStatus.FromString,
+                '/Task/QueryStatus',
+                request_serializer=task__pb2.RunningTask.SerializeToString,
+                response_deserializer=task__pb2.RunningStatus.FromString,
                 )
         self.GetResult = channel.unary_stream(
-                '/RunExample/GetResult',
-                request_serializer=example__pb2.CompletedExample.SerializeToString,
-                response_deserializer=example__pb2.ResultFile.FromString,
+                '/Task/GetResult',
+                request_serializer=task__pb2.CompletedTask.SerializeToString,
+                response_deserializer=task__pb2.ResultFile.FromString,
                 )
 
 
-class RunExampleServicer(object):
+class TaskServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Start(self, request, context):
+    def StartTask(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -53,35 +53,35 @@ class RunExampleServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_RunExampleServicer_to_server(servicer, server):
+def add_TaskServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Start': grpc.unary_unary_rpc_method_handler(
-                    servicer.Start,
-                    request_deserializer=example__pb2.StartingExample.FromString,
-                    response_serializer=example__pb2.StartingStatus.SerializeToString,
+            'StartTask': grpc.stream_unary_rpc_method_handler(
+                    servicer.StartTask,
+                    request_deserializer=task__pb2.StartingTask.FromString,
+                    response_serializer=task__pb2.StartingStatus.SerializeToString,
             ),
             'QueryStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.QueryStatus,
-                    request_deserializer=example__pb2.RunningExample.FromString,
-                    response_serializer=example__pb2.RunningStatus.SerializeToString,
+                    request_deserializer=task__pb2.RunningTask.FromString,
+                    response_serializer=task__pb2.RunningStatus.SerializeToString,
             ),
             'GetResult': grpc.unary_stream_rpc_method_handler(
                     servicer.GetResult,
-                    request_deserializer=example__pb2.CompletedExample.FromString,
-                    response_serializer=example__pb2.ResultFile.SerializeToString,
+                    request_deserializer=task__pb2.CompletedTask.FromString,
+                    response_serializer=task__pb2.ResultFile.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'RunExample', rpc_method_handlers)
+            'Task', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class RunExample(object):
+class Task(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Start(request,
+    def StartTask(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -91,9 +91,9 @@ class RunExample(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/RunExample/Start',
-            example__pb2.StartingExample.SerializeToString,
-            example__pb2.StartingStatus.FromString,
+        return grpc.experimental.stream_unary(request_iterator, target, '/Task/StartTask',
+            task__pb2.StartingTask.SerializeToString,
+            task__pb2.StartingStatus.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -108,9 +108,9 @@ class RunExample(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/RunExample/QueryStatus',
-            example__pb2.RunningExample.SerializeToString,
-            example__pb2.RunningStatus.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Task/QueryStatus',
+            task__pb2.RunningTask.SerializeToString,
+            task__pb2.RunningStatus.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -125,8 +125,8 @@ class RunExample(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/RunExample/GetResult',
-            example__pb2.CompletedExample.SerializeToString,
-            example__pb2.ResultFile.FromString,
+        return grpc.experimental.unary_stream(request, target, '/Task/GetResult',
+            task__pb2.CompletedTask.SerializeToString,
+            task__pb2.ResultFile.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

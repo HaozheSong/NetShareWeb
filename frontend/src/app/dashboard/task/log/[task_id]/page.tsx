@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 
 interface Status {
-  example_id: number
+  task_id: number
   is_completed: boolean
   log_file_content: string
 }
@@ -10,13 +10,13 @@ interface Status {
 export default function example ({
   params
 }: {
-  params: { example_id: number }
+  params: { task_id: number }
 }) {
-  const example_id = params.example_id
+  const task_id = params.task_id
   const [log, setLog] = useState('Log will be displayed here.')
   useEffect(() => {
     
-    const interval = setInterval(getLog, 1500, example_id, setLog)
+    const interval = setInterval(getLog, 1500, task_id, setLog)
     return () => clearInterval(interval)
   })
   return (
@@ -27,10 +27,10 @@ export default function example ({
 }
 
 async function getLog (
-  example_id: number,
+  task_id: number,
   setLog: React.Dispatch<React.SetStateAction<string>>
 ) {
-  const response = await fetch(`/api/run-example/read/log/?example_id=${example_id}`)
+  const response = await fetch(`/api/task/read/log/?task_id=${task_id}`)
   const status: Status = await response.json()
   setLog(status.log_file_content)
 }

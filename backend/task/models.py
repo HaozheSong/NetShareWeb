@@ -2,10 +2,10 @@ from django.db import models
 from django.utils import timezone
 
 
-class Example(models.Model):
-    example_id = models.BigAutoField(primary_key=True)
-    example_kind = models.CharField(max_length=256)
-    example_name = models.CharField(max_length=256, null=True)
+class Task(models.Model):
+    task_id = models.BigAutoField(primary_key=True)
+    task_kind = models.CharField(max_length=256, null=True)
+    task_name = models.CharField(max_length=256, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     is_completed = models.BooleanField(null=True)
     completed_at = models.DateTimeField(null=True)
@@ -13,7 +13,7 @@ class Example(models.Model):
 
     def get_attr_dict(self):
         attr_dict = {}
-        all_fields = Example._meta.get_fields()
+        all_fields = Task._meta.get_fields()
         for field in all_fields:
             attr_key = field.name
             attr_value = getattr(self, attr_key)
