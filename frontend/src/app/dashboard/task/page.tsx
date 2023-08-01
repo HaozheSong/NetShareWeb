@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Task {
   task_id: number
@@ -95,6 +95,70 @@ function StartTaskForm ({
 }: {
   setAllTasks: React.Dispatch<React.SetStateAction<Task[]>>
 }) {
+  const datasetRef = useRef<HTMLInputElement>(null)
+  const configRef = useRef<HTMLInputElement>(null)
+
+  const submitBtnTextDefault = <>Submit</>
+  const submitBtnTextUploading = (
+    <>
+      <svg
+        className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
+        xmlns='http://www.w3.org/2000/svg'
+        fill='none'
+        viewBox='0 0 24 24'
+      >
+        <circle
+          className='opacity-25'
+          cx='12'
+          cy='12'
+          r='10'
+          stroke='currentColor'
+          stroke-width='4'
+        ></circle>
+        <path
+          className='opacity-75'
+          fill='currentColor'
+          d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+        ></path>
+      </svg>
+      Uploading
+    </>
+  )
+  const [submitBtnText, setSubmitBtnText] = useState(submitBtnTextDefault)
+
+  const sendForm = async () => {
+    const formData = new FormData()
+    if (
+      datasetRef.current &&
+      datasetRef.current.files &&
+      datasetRef.current.files[0]
+    ) {
+      formData.append('dataset', datasetRef.current.files[0])
+    } else {
+      alert('Invalid dataset file')
+      return
+    }
+    if (
+      configRef.current &&
+      configRef.current.files &&
+      configRef.current.files[0]
+    ) {
+      formData.append('config', configRef.current.files[0])
+    } else {
+      alert('Invalid config file')
+      return
+    }
+    setSubmitBtnText(submitBtnTextUploading)
+    const response = await fetch('/api/task/create/', {
+      method: 'POST',
+      body: formData
+    })
+    const resp_json = await response.json()
+    if (resp_json.is_successful) {
+      getAllTasks(setAllTasks)
+      setSubmitBtnText(submitBtnTextDefault)
+    }
+  }
   return (
     <form
       method='POST'
@@ -105,6 +169,7 @@ function StartTaskForm ({
       <div className='my-4'>
         <label htmlFor='dataset'>Select Dataset</label>
         <input
+          ref={datasetRef}
           type='file'
           name='dataset'
           id='dataset'
@@ -114,6 +179,7 @@ function StartTaskForm ({
       <div className='my-4'>
         <label htmlFor='config'>Select Config</label>
         <input
+          ref={configRef}
           type='file'
           name='config'
           id='config'
@@ -121,10 +187,13 @@ function StartTaskForm ({
         />
       </div>
       <button
-        type='submit'
-        className='my-4 px-3 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50 text-center'
+        type='button'
+        onClick={sendForm}
+        id='submitBtn'
+        className=' inline-flex items-center my-4 px-3 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50 disabled:opacity-75 disabled:hover:bg-sky-500 disabled:cursor-not-allowed'
+        disabled={submitBtnText === submitBtnTextUploading ? true : false}
       >
-        Submit
+        {submitBtnText}
       </button>
     </form>
   )
