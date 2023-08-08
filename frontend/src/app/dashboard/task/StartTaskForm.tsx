@@ -141,7 +141,7 @@ export default function StartTaskForm ({
                         <option value='timeseries'>timeseries</option>
                       </select>
                     </div>
-                    {renderHeaderType(header, headerInfo, setHeaderInfo)}
+                    {renderHeaderSubSelections(header, headerInfo, setHeaderInfo)}
                   </td>
                 </tr>
               ))}
@@ -203,144 +203,180 @@ function selectHeaderTypeHandler (
   setHeaderInfo(newHeaderInfo)
 }
 
-function renderHeaderType (
+const DatatypeSelect = ({
+  header,
+  headerInfo,
+  setHeaderInfo
+}: {
+  header: string
+  headerInfo: any
+  setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
+}) => (
+  <div id={`${header}-datatype-div`}>
+    <label htmlFor={`${header}-datatype-select`} className='mr-2'>
+      Select the datatype of this header
+    </label>
+    <select
+      value={
+        headerInfo[header].datatype ? headerInfo[header].datatype : 'default'
+      }
+      onChange={event => {
+        const newHeaderInfo = { ...headerInfo }
+        newHeaderInfo[header].datatype = event.target.value
+        setHeaderInfo(newHeaderInfo)
+      }}
+      id={`${header}-datatype-select`}
+      className={selectClassName + ' mr-4'}
+    >
+      <option value='default' disabled>
+        datatype
+      </option>
+      <option value='string'>string</option>
+      <option value='float'>float</option>
+    </select>
+  </div>
+)
+
+const StringDatatypeSelect = ({
+  header,
+  headerInfo,
+  setHeaderInfo
+}: {
+  header: string
+  headerInfo: any
+  setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
+}) => {
+  if (headerInfo[header].datatype && headerInfo[header].datatype == 'string') {
+    return (
+      <div id={`${header}-string-encoding-div`} className='my-1'>
+        <label htmlFor={`${header}-string-encoding-select`} className='mr-2'>
+          Select the encoding for this string header
+        </label>
+        <select
+          value={
+            headerInfo[header].encoding
+              ? headerInfo[header].encoding
+              : 'default'
+          }
+          onChange={event => {
+            const newHeaderInfo = { ...headerInfo }
+            newHeaderInfo[header].encoding = event.target.value
+            setHeaderInfo(newHeaderInfo)
+          }}
+          id={`${header}-string-encoding-select`}
+          className={selectClassName}
+        >
+          <option value='default' disabled>
+            encoding
+          </option>
+          <option value='word2vec_port'>word2vec_port</option>
+          <option value='word2vec_ip'>word2vec_ip</option>
+          <option value='categorical'>categorical</option>
+        </select>
+      </div>
+    )
+  } else {
+    return ''
+  }
+}
+
+const FloatDatatypeSelect = ({
+  header,
+  headerInfo,
+  setHeaderInfo
+}: {
+  header: string
+  headerInfo: any
+  setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
+}) => {
+  if (headerInfo[header].datatype && headerInfo[header].datatype == 'float') {
+    return (
+      <>
+        <div id={`${header}-float-normalization-div`} className='my-1'>
+          <label
+            htmlFor={`${header}-float-normalization-select`}
+            className='mr-2'
+          >
+            Select the normalization for this float header
+          </label>
+          <select
+            value={
+              headerInfo[header].normalization
+                ? headerInfo[header].normalization
+                : 'default'
+            }
+            onChange={event => {
+              const newHeaderInfo = { ...headerInfo }
+              newHeaderInfo[header].normalization = event.target.value
+              setHeaderInfo(newHeaderInfo)
+            }}
+            id={`${header}-float-normalization-select`}
+            className={selectClassName}
+          >
+            <option value='default' disabled>
+              normalization
+            </option>
+            <option value='MINUSONE_ONE'>MINUSONE_ONE</option>
+            <option value='ZERO_ONE'>ZERO_ONE</option>
+          </select>
+        </div>
+
+        <div id={`${header}-float-log1p_norm-div`} className='my-1'>
+          <label htmlFor={`${header}-float-log1p_norm-select`} className='mr-2'>
+            Select the log1p_norm for this float header
+          </label>
+          <select
+            value={
+              headerInfo[header].log1p_norm
+                ? headerInfo[header].log1p_norm
+                : 'default'
+            }
+            onChange={event => {
+              const newHeaderInfo = { ...headerInfo }
+              newHeaderInfo[header].log1p_norm = event.target.value
+              setHeaderInfo(newHeaderInfo)
+            }}
+            id={`${header}-float-log1p_norm-select`}
+            className={selectClassName}
+          >
+            <option value='default' disabled>
+              log1p_norm
+            </option>
+            <option value='true'>true</option>
+            <option value='false'>false</option>
+          </select>
+        </div>
+      </>
+    )
+  } else {
+    return ''
+  }
+}
+
+function renderHeaderSubSelections (
   header: string,
   headerInfo: any,
   setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
 ) {
   if (headerInfo[header] == undefined) return ''
 
-  const DatatypeSelect = () => (
-    <div id={`${header}-datatype-div`}>
-      <label htmlFor={`${header}-datatype-select`}  className='mr-2'>
-        Select the datatype of this header
-      </label>
-      <select
-        value={
-          headerInfo[header].datatype ? headerInfo[header].datatype : 'default'
-        }
-        onChange={event => {
-          const newHeaderInfo = { ...headerInfo }
-          newHeaderInfo[header].datatype = event.target.value
-          setHeaderInfo(newHeaderInfo)
-        }}
-        id={`${header}-datatype-select`}
-        className={selectClassName + ' mr-4'}
-      >
-        <option value='default' disabled>
-          datatype
-        </option>
-        <option value='string'>string</option>
-        <option value='float'>float</option>
-      </select>
-    </div>
-  )
-
-  const StringDatatypeSelect = () => {
-    if (
-      headerInfo[header].datatype &&
-      headerInfo[header].datatype == 'string'
-    ) {
-      return (
-        <div id={`${header}-string-encoding-div`} className='my-1'>
-          <label htmlFor={`${header}-string-encoding-select`}  className='mr-2'>
-            Select the encoding for this string header
-          </label>
-          <select
-            value={
-              headerInfo[header].encoding
-                ? headerInfo[header].encoding
-                : 'default'
-            }
-            onChange={event => {
-              const newHeaderInfo = { ...headerInfo }
-              newHeaderInfo[header].encoding = event.target.value
-              setHeaderInfo(newHeaderInfo)
-            }}
-            id={`${header}-string-encoding-select`}
-            className={selectClassName}
-          >
-            <option value='default' disabled>
-              encoding
-            </option>
-            <option value='word2vec_port'>word2vec_port</option>
-            <option value='word2vec_ip'>word2vec_ip</option>
-            <option value='categorical'>categorical</option>
-          </select>
-        </div>
-      )
-    } else {
-      return ''
-    }
-  }
-
-  const FloatDatatypeSelect = () => {
-    if (headerInfo[header].datatype && headerInfo[header].datatype == 'float') {
-      return (
-        <>
-          <div id={`${header}-float-normalization-div`} className='my-1'>
-            <label htmlFor={`${header}-float-normalization-select`}  className='mr-2'>
-              Select the normalization for this float header
-            </label>
-            <select
-              value={
-                headerInfo[header].normalization
-                  ? headerInfo[header].normalization
-                  : 'default'
-              }
-              onChange={event => {
-                const newHeaderInfo = { ...headerInfo }
-                newHeaderInfo[header].normalization = event.target.value
-                setHeaderInfo(newHeaderInfo)
-              }}
-              id={`${header}-float-normalization-select`}
-              className={selectClassName}
-            >
-              <option value='default' disabled>
-                normalization
-              </option>
-              <option value='MINUSONE_ONE'>MINUSONE_ONE</option>
-              <option value='ZERO_ONE'>ZERO_ONE</option>
-            </select>
-          </div>
-          
-          <div id={`${header}-float-log1p_norm-div`} className='my-1'>
-            <label htmlFor={`${header}-float-log1p_norm-select`}  className='mr-2'>
-              Select the log1p_norm for this float header
-            </label>
-            <select
-              value={
-                headerInfo[header].log1p_norm
-                  ? headerInfo[header].log1p_norm
-                  : 'default'
-              }
-              onChange={event => {
-                const newHeaderInfo = { ...headerInfo }
-                newHeaderInfo[header].log1p_norm = event.target.value
-                setHeaderInfo(newHeaderInfo)
-              }}
-              id={`${header}-float-log1p_norm-select`}
-              className={selectClassName}
-            >
-              <option value='default' disabled>
-                log1p_norm
-              </option>
-              <option value='true'>true</option>
-              <option value='false'>false</option>
-            </select>
-          </div>
-        </>
-      )
-    } else {
-      return ''
-    }
-  }
-
   const element = (
     <>
-      <DatatypeSelect />
-      <StringDatatypeSelect />
-      <FloatDatatypeSelect />
+      <DatatypeSelect
+        header={header}
+        headerInfo={headerInfo}
+        setHeaderInfo={setHeaderInfo}
+      />
+      <StringDatatypeSelect
+        header={header}
+        headerInfo={headerInfo}
+        setHeaderInfo={setHeaderInfo}
+      />
+      <FloatDatatypeSelect
+        header={header}
+        headerInfo={headerInfo}
+        setHeaderInfo={setHeaderInfo}
+      />
     </>
   )
 
