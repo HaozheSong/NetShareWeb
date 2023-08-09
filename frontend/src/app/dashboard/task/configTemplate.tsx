@@ -4,7 +4,6 @@ const configTemplate = {
     postprocessors: []
   },
   global_config: {
-    original_data_file: '',
     overwrite: true,
     dataset_type: 'netflow',
     n_chunks: 1,

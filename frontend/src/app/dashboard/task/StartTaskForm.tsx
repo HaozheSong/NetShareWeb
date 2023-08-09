@@ -3,6 +3,30 @@ import Papa from 'papaparse'
 import configTemplate from './configTemplate'
 import { Task, getAllTasks } from './page'
 
+// TODO: make HeaderInfo more accurate
+type HeaderInfo = any
+const headerInfoExample = {
+  traceid: {
+    type: 'metadata',
+    datatype: 'string',
+    encoding: 'word2vec_port'
+  },
+  timestamp: {
+    type: 'timestamp'
+  },
+  rpcid: {
+    type: 'timeseries',
+    datatype: 'string',
+    encoding: 'categorical'
+  },
+  rt: {
+    type: 'timeseries',
+    datatype: 'float',
+    normalization: 'MINUSONE_ONE',
+    log1p_norm: false
+  }
+}
+
 const submitBtnTextDefault = <>Launch Task</>
 const submitBtnTextUploading = (
   <>
@@ -18,7 +42,7 @@ const submitBtnTextUploading = (
         cy='12'
         r='10'
         stroke='currentColor'
-        stroke-width='4'
+        strokeWidth='4'
       ></circle>
       <path
         className='opacity-75'
@@ -43,28 +67,9 @@ export default function StartTaskForm ({
 
   const [submitBtnText, setSubmitBtnText] = useState(submitBtnTextDefault)
   const [datasetHeaders, setDatasetHeaders] = useState([] as Array<string>)
-  const [headerInfo, setHeaderInfo] = useState({} as any)
-  const headerInfoExample = {
-    traceid: {
-      type: 'metadata',
-      datatype: 'string',
-      encoding: 'word2vec_port'
-    },
-    timestamp: {
-      type: 'timestamp'
-    },
-    rpcid: {
-      type: 'timeseries',
-      datatype: 'string',
-      encoding: 'categorical'
-    },
-    rt: {
-      type: 'timeseries',
-      datatype: 'float',
-      normalization: 'MINUSONE_ONE',
-      log1p_norm: false
-    }
-  }
+  const [headerInfo, setHeaderInfo] = useState({} as HeaderInfo)
+  // configSource = '' | 'configFromFile' | 'configFromDataset'
+  const [configSource, setConfigSource] = useState('')
 
   return (
     <form
@@ -74,7 +79,9 @@ export default function StartTaskForm ({
       className='my-4'
     >
       <div className='my-4'>
-        <label htmlFor='dataset'>Select Dataset</label>
+        <label htmlFor='dataset' className='text-lg font-medium'>
+          Upload Dataset
+        </label>
         <input
           ref={datasetRef}
           type='file'
@@ -87,7 +94,19 @@ export default function StartTaskForm ({
         />
       </div>
       <div className='my-4'>
-        <label htmlFor='config'>Select Config</label>
+        <p className='text-lg font-medium'>Upload Config</p>
+        <input
+          type='checkbox'
+          id='configFromFile'
+          className='mr-2'
+          checked={configSource == 'configFromFile'}
+          onChange={() => {
+            configSource == 'configFromFile'
+              ? setConfigSource('')
+              : setConfigSource('configFromFile')
+          }}
+        />
+        <label htmlFor='configFromFile'>From a file</label>
         <input
           ref={configRef}
           type='file'
@@ -100,6 +119,18 @@ export default function StartTaskForm ({
         ''
       ) : (
         <div>
+          <input
+            type='checkbox'
+            id='configFromDataset'
+            className='mr-2'
+            checked={configSource == 'configFromDataset'}
+            onChange={() => {
+              configSource == 'configFromDataset'
+                ? setConfigSource('')
+                : setConfigSource('configFromDataset')
+            }}
+          />
+          <label htmlFor=''>Generate config from the dataset</label>
           <table className='table-auto w-full border-collapse border border-slate-400'>
             <thead>
               <tr>
@@ -141,7 +172,11 @@ export default function StartTaskForm ({
                         <option value='timeseries'>timeseries</option>
                       </select>
                     </div>
-                    {renderHeaderSubSelections(header, headerInfo, setHeaderInfo)}
+                    {renderHeaderSubSelections(
+                      header,
+                      headerInfo,
+                      setHeaderInfo
+                    )}
                   </td>
                 </tr>
               ))}
@@ -152,7 +187,14 @@ export default function StartTaskForm ({
       <button
         type='button'
         onClick={() =>
-          sendForm(datasetRef, configRef, setSubmitBtnText, setAllTasks)
+          sendForm(
+            datasetRef,
+            configRef,
+            configSource,
+            headerInfo,
+            setSubmitBtnText,
+            setAllTasks
+          )
         }
         id='submitBtn'
         className='inline-flex items-center my-4 px-3 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50 disabled:opacity-75 disabled:hover:bg-sky-500 disabled:cursor-not-allowed'
@@ -170,8 +212,6 @@ function parseDataset (
 ) {
   if (event.target.files) {
     const file = event.target.files[0]
-    configTemplate.global_config.original_data_file = file.name
-    configTemplate.pre_post_processor.config.timestamp.column = ''
     Papa.parse(file, {
       header: true,
       complete: results => {
@@ -185,7 +225,7 @@ function parseDataset (
 function selectHeaderTypeHandler (
   header: string,
   headerType: string,
-  headerInfo: any,
+  headerInfo: HeaderInfo,
   setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
 ) {
   if (headerType == 'timestamp') {
@@ -326,14 +366,16 @@ const FloatDatatypeSelect = ({
             Select the log1p_norm for this float header
           </label>
           <select
-            value={
-              headerInfo[header].log1p_norm
-                ? headerInfo[header].log1p_norm
-                : 'default'
-            }
+            value={(function () {
+              if (headerInfo[header].log1p_norm == undefined) {
+                return 'default'
+              } else {
+                return headerInfo[header].log1p_norm.toString()
+              }
+            })()}
             onChange={event => {
               const newHeaderInfo = { ...headerInfo }
-              newHeaderInfo[header].log1p_norm = event.target.value
+              newHeaderInfo[header].log1p_norm = event.target.value == 'true'
               setHeaderInfo(newHeaderInfo)
             }}
             id={`${header}-float-log1p_norm-select`}
@@ -355,7 +397,7 @@ const FloatDatatypeSelect = ({
 
 function renderHeaderSubSelections (
   header: string,
-  headerInfo: any,
+  headerInfo: HeaderInfo,
   setHeaderInfo: React.Dispatch<React.SetStateAction<any>>
 ) {
   if (headerInfo[header] == undefined) return ''
@@ -388,9 +430,34 @@ function renderHeaderSubSelections (
   }
 }
 
+function generateConfig (headerInfo: HeaderInfo) {
+  const config = { ...configTemplate }
+  const metadata: Object[] = config.pre_post_processor.config.metadata
+  const timeseries: Object[] = config.pre_post_processor.config.timeseries
+  for (let key in headerInfo) {
+    if (headerInfo[key].type == 'timestamp') {
+      config.pre_post_processor.config.timestamp.column = key
+    } else {
+      const columnObj = { ...headerInfo[key] }
+      delete columnObj.type
+      delete columnObj.datatype
+      columnObj.column = key
+      columnObj.type = headerInfo[key].datatype
+      if (headerInfo[key].type == 'metadata') {
+        metadata.push(columnObj)
+      } else if (headerInfo[key].type == 'timeseries') {
+        timeseries.push(columnObj)
+      }
+    }
+  }
+  return config
+}
+
 async function sendForm (
   datasetRef: React.RefObject<HTMLInputElement>,
   configRef: React.RefObject<HTMLInputElement>,
+  configSource: string,
+  headerInfo: HeaderInfo,
   setSubmitBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>,
   setAllTasks: React.Dispatch<React.SetStateAction<Task[]>>
 ) {
@@ -405,7 +472,15 @@ async function sendForm (
     alert('Invalid dataset file')
     return
   }
-  if (
+
+  if (configSource == 'configFromDataset') {
+    const config = generateConfig(headerInfo)
+    const configFile = new File([JSON.stringify(config)], 'config.json', {
+      type: 'application/json'
+    })
+    formData.append('config', configFile)
+  } else if (
+    configSource == 'configFromFile' &&
     configRef.current &&
     configRef.current.files &&
     configRef.current.files[0]
