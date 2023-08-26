@@ -19,27 +19,12 @@ export const SIDEBAR = {
       title: 'GENERAL',
       links: [
         { text: 'Dashboard', href: '/dashboard' },
-        { text: 'Account', href: '#account' }
       ]
-    },
-    {
-      title: 'DATASETS',
-      links: [
-        { text: 'Running Datasets', href: '#running-datasets' },
-        { text: 'All Datasets', href: '#all-datasets' }
-      ]
-    },
-    {
-      title: 'MODELS',
-      links: [{ text: 'Custom Models', href: '#custom-models' }]
     },
     {
       title: 'ACTIONS',
       links: [
         { text: 'Task', href: '/dashboard/task' },
-        { text: 'Raw Dataset Upload', href: '#raw-dataset-upload' },
-        { text: 'Data Generation', href: '#data-generation' },
-        { text: 'Customize Model Upload', href: '#customize-model-upload' }
       ]
     }
   ]

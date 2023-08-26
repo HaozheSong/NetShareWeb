@@ -7,7 +7,7 @@ import './result.css'
 
 let task_id: number
 
-export default function Result ({ params }: { params: { task_id: number } }) {
+export default function TaskResult ({ params }: { params: { task_id: number } }) {
   task_id = params.task_id
   const [resultJSXElements, setResultJSXElements] = useState(
     [] as Array<JSX.Element>

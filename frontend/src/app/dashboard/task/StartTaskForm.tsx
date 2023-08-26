@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import Papa from 'papaparse'
 import configTemplate from './configTemplate'
-import { Task, getAllTasks } from './page'
+import { Task } from './page'
+import { getAllTasks } from './utils'
 
 // TODO: make HeaderInfo more accurate
 type HeaderInfo = any
@@ -89,7 +90,12 @@ export default function StartTaskForm ({
           id='dataset'
           className='block w-full border rounded cursor-pointer file:cursor-pointer file:px-3 file:py-2 file:mr-4 file:rounded file:border-0 file:bg-sky-500 file:text-sky-50'
           onChange={event => {
-            parseDataset(event, setDatasetHeaders)
+            if (
+              event.target.files &&
+              event.target.files[0].type == 'text/csv'
+            ) {
+              parseDataset(event, setDatasetHeaders)
+            }
           }}
         />
       </div>

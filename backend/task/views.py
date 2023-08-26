@@ -8,7 +8,7 @@ from django.utils import timezone
 import grpc
 from task import task_pb2, task_pb2_grpc
 
-from backend.config import ML_SERVER
+from config import ML_SERVER
 from task.models import Task
 
 # results_dir = backend/task/results

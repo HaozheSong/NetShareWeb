@@ -7,15 +7,10 @@ interface Status {
   log_file_content: string
 }
 
-export default function example ({
-  params
-}: {
-  params: { task_id: number }
-}) {
+export default function TaskLog ({ params }: { params: { task_id: number } }) {
   const task_id = params.task_id
   const [log, setLog] = useState('Log will be displayed here.')
   useEffect(() => {
-    
     const interval = setInterval(getLog, 1500, task_id, setLog)
     return () => clearInterval(interval)
   })
