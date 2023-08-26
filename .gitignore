@@ -4,7 +4,10 @@
 .DS_Store
 
 /log/
-/netshareweb.conf
+
+nginx/netshareweb.conf
+nginx/*.crt
+nginx/*.key
 
 /backend/task/results
 /backend/backend/settings.py

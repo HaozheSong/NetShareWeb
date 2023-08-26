@@ -48,33 +48,22 @@ nvm install 18.16.0
 cd frontend
 npm install
 ```
-
-## Start NextJS Frontend Server with pm2
-Rename `nextjs_template.service` of `frontend/nextjs_template.service` to `nextjs.service`
-
-Change `<NetShareWeb>` and `<npm>` in `nextjs.service` to the correct path. Use `which npm` to get `<npm>` path.
-
-Copy systemd unit file to system configuration directory and start the service
-```bash
-sudo cp nextjs.service /etc/systemd/system/nextjs.service
-sudo systemctl start nextjs
-sudo systemctl enable nextjs
-
-sudo systemctl daemon-reload
-sudo systemctl restart nextjs
-
-sudo systemctl status nextjs
+### Start NextJS Frontend Server with pm2
 ```
-Frontend server is running on port 3000
+pm2 start pm2.config.js
+```
+Frontend is running on port 5000
 ##  NGINX
 Install NGINX
 ```bash
 sudo apt update
 sudo apt install nginx
 ```
-Rename `netshareweb_template.conf` in the root directory to `netshareweb.conf`
+Rename `netshareweb_template.conf` of `nginx/netshareweb_template.conf` to `netshareweb.conf`
 
-Change `<server_name>` and `<NetShareWeb>` in `gunicorn_nginx.conf` to the correct value
+Change variables wrapped with `<>` in `gunicorn_nginx.conf` to the correct value
+
+HTTPS certificates can be placed in the `nginx/` directory
 
 Copy NGINX configuration file to the NGINX directory and reload NGINX
 ```bash
