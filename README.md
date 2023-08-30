@@ -52,7 +52,7 @@ npm install
 ```
 pm2 start pm2.config.js
 ```
-Frontend is running on port 5000
+Frontend is running on port 3000
 ##  NGINX
 Install NGINX
 ```bash
