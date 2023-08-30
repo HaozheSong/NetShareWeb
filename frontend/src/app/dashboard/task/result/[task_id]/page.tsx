@@ -7,7 +7,11 @@ import './result.css'
 
 let task_id: number
 
-export default function TaskResult ({ params }: { params: { task_id: number } }) {
+export default function TaskResult ({
+  params
+}: {
+  params: { task_id: number }
+}) {
   task_id = params.task_id
   const [resultJSXElements, setResultJSXElements] = useState(
     [] as Array<JSX.Element>
@@ -15,7 +19,17 @@ export default function TaskResult ({ params }: { params: { task_id: number } })
   useEffect(() => {
     getResult(task_id, setResultJSXElements)
   }, [])
-  return <>{resultJSXElements.map(element => element)}</>
+  return (
+    <>
+      <a
+        href={`/api/task/read/result/?task_id=${task_id}&file_name=synthetic_data.csv`}
+        className='inline-flex items-center my-4 px-3 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50'
+      >
+        Download synthetic data
+      </a>
+      {resultJSXElements.map(element => element)}
+    </>
+  )
 }
 
 async function getResult (
