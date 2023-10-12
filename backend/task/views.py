@@ -25,7 +25,8 @@ def create_task(request):
     if request.method == 'POST':
         dataset_file = request.FILES['dataset']
         config_file = request.FILES['config']
-        task = Task(task_kind='customized')
+        task = Task(task_kind='customized',
+                    task_name='to be synced')
         task.save()
         # TODO: not elegant
         grpc_requests = []
@@ -71,7 +72,22 @@ def read_log(request):
     except Task.DoesNotExist:
         return HttpResponse(f"Example with example_id {request.GET['example_id']} does not exist", status=400)
 
-    channel = grpc.insecure_channel(f"{ML_SERVER['IP']}:{ML_SERVER['PORT']}")
+    task_result_dir = results_dir.joinpath(task.task_name)
+    task_log_file = task_result_dir.joinpath('stdout_stderr.log')
+    if task_log_file.is_file():
+        json_response = {
+            'task_id': task_id,
+            'task_name': task.task_name,
+            'is_completed': task.is_completed,
+            'log_file_name': task.log_file_name,
+            'log_file_content': None
+        }
+        with open(task_log_file) as task_log_fd:
+            json_response['log_file_content'] = task_log_fd.read()
+        return JsonResponse(json_response)
+    
+    channel = grpc.insecure_channel(
+        f"{ML_SERVER['IP']}:{ML_SERVER['PORT']}")
     stub = task_pb2_grpc.TaskStub(channel)
     grpc_request = task_pb2.RunningTask(
         task_id=task_id,
@@ -85,6 +101,8 @@ def read_log(request):
         'log_file_name': grpc_response.log_file_name,
         'log_file_content': grpc_response.log_file_content
     }
+    task.log_file_name = grpc_response.log_file_name
+    task.save()
     return JsonResponse(json_response)
 
 

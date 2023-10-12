@@ -7,16 +7,19 @@ python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
+### Change config.py
+Rename `config_template.py` in `backend/config_template.py` to `config.py`
+
+Change variable values in `config.py`
+
 ### Django Checklist
 Rename `settings_template.py` of `backend/backend/settings_template.py` to `settings.py`
 Fix warnings listed by the following command
 ```bash
 python manage.py check --deploy
 ```
-### Change config.py
-Rename `config_template.py` in `backend/config_template.py` to `config.py`
 
-Change variable values in `config.py`
 ### Start Gunicorn Backend Server with Systemd
 Rename `gunicorn_template.service` of `backend/gunicorn_template.service` to `gunicorn.service`
 
@@ -31,6 +34,7 @@ sudo systemctl enable gunicorn
 sudo systemctl status gunicorn
 ```
 Backend server is running on port 8000
+
 ## Frontend
 ### (OPTIONAL) Install NodeJS 18.16.0
 Install nvm

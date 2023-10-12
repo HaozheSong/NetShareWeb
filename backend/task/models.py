@@ -4,12 +4,13 @@ from django.utils import timezone
 
 class Task(models.Model):
     task_id = models.BigAutoField(primary_key=True)
-    task_kind = models.CharField(max_length=256, null=True)
-    task_name = models.CharField(max_length=256, null=True)
+    task_kind = models.CharField(max_length=256)
+    task_name = models.CharField(max_length=256)
+    log_file_name = models.CharField(max_length=256, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     is_completed = models.BooleanField(null=True)
     completed_at = models.DateTimeField(null=True)
-    updated_at = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def get_attr_dict(self):
         attr_dict = {}
