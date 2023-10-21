@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import configTemplate from './configTemplate'
 import { HeaderInfo } from './StartTaskForm'
@@ -37,6 +38,7 @@ interface SubmitBtnProps {
 }
 
 export default function SubmitBtn (props: SubmitBtnProps) {
+  const router = useRouter()
   const [submitBtnText, setSubmitBtnText] = useState(submitBtnTextDefault)
   return (
     <button
@@ -48,7 +50,12 @@ export default function SubmitBtn (props: SubmitBtnProps) {
           props.configSource,
           props.headerInfo,
           setSubmitBtnText
-        )
+        ).then(isSuccessful => {
+          if (isSuccessful) {
+            router.push('/dashboard/task-status/')
+          }
+          setSubmitBtnText(submitBtnTextDefault)
+        })
       }
       id='submitBtn'
       className='btn-block'
@@ -98,7 +105,7 @@ async function sendForm (
     formData.append('dataset', datasetRef.current.files[0])
   } else {
     alert('Invalid dataset file')
-    return
+    return false
   }
 
   if (configSource == 'configFromDataset') {
@@ -116,7 +123,7 @@ async function sendForm (
     formData.append('config', configRef.current.files[0])
   } else {
     alert('Invalid config file')
-    return
+    return false
   }
   setSubmitBtnText(submitBtnTextUploading)
   const response = await fetch('/api/task/create/', {
@@ -125,6 +132,7 @@ async function sendForm (
   })
   const resp_json = await response.json()
   if (resp_json.is_successful) {
-    setSubmitBtnText(submitBtnTextDefault)
+    return true
   }
+  return false
 }
