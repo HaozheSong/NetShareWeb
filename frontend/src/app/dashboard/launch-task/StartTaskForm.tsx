@@ -1,8 +1,6 @@
 import { useRef, useState } from 'react'
 import Papa from 'papaparse'
 import configTemplate from './configTemplate'
-import { Task } from './page'
-import { getAllTasks } from './utils'
 
 // TODO: make HeaderInfo more accurate
 type HeaderInfo = any
@@ -58,11 +56,7 @@ const submitBtnTextUploading = (
 const selectClassName =
   'px-2 py-1 text-sm border rounded-md focus:border-blue-500 focus:ring-blue-500'
 
-export default function StartTaskForm ({
-  setAllTasks
-}: {
-  setAllTasks: React.Dispatch<React.SetStateAction<Task[]>>
-}) {
+export default function StartTaskForm () {
   const datasetRef = useRef<HTMLInputElement>(null)
   const configRef = useRef<HTMLInputElement>(null)
 
@@ -99,6 +93,7 @@ export default function StartTaskForm ({
           }}
         />
       </div>
+      
       <div className='my-4'>
         <p className='text-lg font-medium'>Upload Config</p>
         <input
@@ -121,6 +116,7 @@ export default function StartTaskForm ({
           className='block w-full border rounded cursor-pointer file:cursor-pointer file:px-3 file:py-2 file:mr-4 file:rounded file:border-0 file:bg-sky-500 file:text-sky-50'
         />
       </div>
+      
       {datasetHeaders.length == 0 ? (
         ''
       ) : (
@@ -190,6 +186,7 @@ export default function StartTaskForm ({
           </table>
         </div>
       )}
+
       <button
         type='button'
         onClick={() =>
@@ -198,8 +195,7 @@ export default function StartTaskForm ({
             configRef,
             configSource,
             headerInfo,
-            setSubmitBtnText,
-            setAllTasks
+            setSubmitBtnText
           )
         }
         id='submitBtn'
@@ -464,8 +460,7 @@ async function sendForm (
   configRef: React.RefObject<HTMLInputElement>,
   configSource: string,
   headerInfo: HeaderInfo,
-  setSubmitBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>,
-  setAllTasks: React.Dispatch<React.SetStateAction<Task[]>>
+  setSubmitBtnText: React.Dispatch<React.SetStateAction<JSX.Element>>
 ) {
   const formData = new FormData()
   if (
@@ -503,7 +498,6 @@ async function sendForm (
   })
   const resp_json = await response.json()
   if (resp_json.is_successful) {
-    getAllTasks(setAllTasks)
     setSubmitBtnText(submitBtnTextDefault)
   }
 }

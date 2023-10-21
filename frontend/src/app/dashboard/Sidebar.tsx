@@ -28,7 +28,7 @@ export const SIDEBAR = {
       links: [
         {
           text: 'Launch a Task',
-          href: '/dashboard/task/',
+          href: '/dashboard/launch-task/',
           icon: sidebarIcon.launchTask
         },
         {
