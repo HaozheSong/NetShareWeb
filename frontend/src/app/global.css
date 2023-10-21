@@ -4,13 +4,19 @@
 
 @layer components {
     .datatype-select {
-        @apply px-2;
-        @apply py-1;
-        @apply text-sm;
-        @apply border;
-        @apply rounded-md;
-        @apply focus:border-blue-500;
-        @apply focus:ring-blue-500;
+        @apply px-2 py-1 text-sm rounded-md border focus:border-blue-500 focus:ring-blue-500;
+    }
+
+    .btn {
+        @apply px-3 py-2 rounded bg-sky-500 hover:bg-sky-600 text-sky-50 disabled:opacity-75 disabled:hover:bg-sky-500 disabled:cursor-not-allowed;
+    }
+
+    .btn-block {
+        @apply w-full btn;
+    }
+
+    .checkbox {
+        @apply w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded;
     }
 }
 

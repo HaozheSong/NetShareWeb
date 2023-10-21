@@ -8,7 +8,7 @@ interface UploadDatasetInputProps {
 export default function UploadDatasetInput (props: UploadDatasetInputProps) {
   return (
     <div className='my-4'>
-      <label htmlFor='dataset' className='text-lg font-medium'>
+      <label htmlFor='dataset' className='text-2xl font-medium'>
         Upload Dataset
       </label>
       <input

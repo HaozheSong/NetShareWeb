@@ -26,7 +26,7 @@ interface ConfigFromDatasetProps {
 export default function UploadConfigInput (props: UploadConfigInputProps) {
   return (
     <div className='my-4'>
-      <p className='text-lg font-medium'>Upload Config</p>
+      <h1 className='text-2xl font-medium'>Upload Config</h1>
       <ConfigFromFile
         configSource={props.configSource}
         setConfigSource={props.setConfigSource}
@@ -49,19 +49,21 @@ export default function UploadConfigInput (props: UploadConfigInputProps) {
 
 function ConfigFromFile (props: ConfigFromFileProps) {
   return (
-    <>
-      <input
-        type='checkbox'
-        id='configFromFile'
-        className='mr-2'
-        checked={props.configSource === 'configFromFile'}
-        onChange={() => {
-          props.configSource === 'configFromFile'
-            ? props.setConfigSource('')
-            : props.setConfigSource('configFromFile')
-        }}
-      />
-      <label htmlFor='configFromFile'>From a file</label>
+    <div id='configFromFileContainer' className='mb-4'>
+      <div id='configFromFileCheckbox' className='flex items-center'>
+        <input
+          type='checkbox'
+          id='configFromFile'
+          className='checkbox'
+          checked={props.configSource === 'configFromFile'}
+          onChange={() => {
+            props.configSource === 'configFromFile'
+              ? props.setConfigSource('')
+              : props.setConfigSource('configFromFile')
+          }}
+        />
+        <label htmlFor='configFromFile'>From a file</label>
+      </div>
       <input
         ref={props.configRef}
         type='file'
@@ -69,18 +71,18 @@ function ConfigFromFile (props: ConfigFromFileProps) {
         id='config'
         className='block w-full border rounded cursor-pointer file:cursor-pointer file:px-3 file:py-2 file:mr-4 file:rounded file:border-0 file:bg-sky-500 file:text-sky-50'
       />
-    </>
+    </div>
   )
 }
 
 function ConfigFromDataset (props: ConfigFromDatasetProps) {
   return (
-    <>
-      <div>
+    <div id='configFromDatasetContainer' className='mb-4'>
+      <div id='configFromDatasetCheckbox' className='flex items-center'>
         <input
           type='checkbox'
           id='configFromDataset'
-          className='mr-2'
+          className='checkbox'
           checked={props.configSource == 'configFromDataset'}
           onChange={() => {
             props.configSource == 'configFromDataset'
@@ -88,60 +90,63 @@ function ConfigFromDataset (props: ConfigFromDatasetProps) {
               : props.setConfigSource('configFromDataset')
           }}
         />
-        <label htmlFor=''>Generate config from the dataset</label>
-        <table className='table-auto w-full border-collapse border border-slate-400'>
-          <thead>
-            <tr>
-              <th className='border border-slate-300'>Headers</th>
-              <th className='border border-slate-300'>Define the Header</th>
-            </tr>
-          </thead>
-          <tbody>
-            {props.csvHeaders.map(header => (
-              <tr key={header}>
-                <td className='border border-slate-300'>{header}</td>
-                <td className='border border-slate-300 px-4 py-2'>
-                  <div id={`${header}-type-div`} className='my-1'>
-                    <label htmlFor={`${header}-type-select`} className='mr-2'>
-                      Select the type of this header
-                    </label>
-                    <select
-                      value={
-                        props.headerInfo[header]
-                          ? props.headerInfo[header].type
-                          : 'default'
-                      }
-                      onChange={event => {
-                        selectHeaderTypeHandler(
-                          header,
-                          event.target.value,
-                          props.headerInfo,
-                          props.setHeaderInfo
-                        )
-                      }}
-                      id={`${header}-type-select`}
-                      className='datatype-select'
-                    >
-                      <option value='default' disabled>
-                        type
-                      </option>
-                      <option value='timestamp'>timestamp</option>
-                      <option value='metadata'>metadata</option>
-                      <option value='timeseries'>timeseries</option>
-                    </select>
-                  </div>
-                  {renderHeaderSubSelections(
-                    header,
-                    props.headerInfo,
-                    props.setHeaderInfo
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <label htmlFor='configFromDataset'>
+          Generate config from the dataset
+        </label>
       </div>
-    </>
+
+      <table className='table-auto w-full border-collapse border border-slate-400'>
+        <thead>
+          <tr>
+            <th className='border border-slate-300'>Headers</th>
+            <th className='border border-slate-300'>Define the Header</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.csvHeaders.map(header => (
+            <tr key={header}>
+              <td className='border border-slate-300'>{header}</td>
+              <td className='border border-slate-300 px-4 py-2'>
+                <div id={`${header}-type-div`} className='my-1'>
+                  <label htmlFor={`${header}-type-select`} className='mr-2'>
+                    Select the type of this header
+                  </label>
+                  <select
+                    value={
+                      props.headerInfo[header]
+                        ? props.headerInfo[header].type
+                        : 'default'
+                    }
+                    onChange={event => {
+                      selectHeaderTypeHandler(
+                        header,
+                        event.target.value,
+                        props.headerInfo,
+                        props.setHeaderInfo
+                      )
+                    }}
+                    id={`${header}-type-select`}
+                    className='datatype-select'
+                  >
+                    <option value='default' disabled>
+                      type
+                    </option>
+                    <option value='timestamp'>timestamp</option>
+                    <option value='metadata'>metadata</option>
+                    <option value='timeseries'>timeseries</option>
+                  </select>
+                </div>
+                {renderHeaderSubSelections(
+                  header,
+                  props.headerInfo,
+                  props.setHeaderInfo
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
