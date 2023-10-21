@@ -31,7 +31,7 @@ export default function AllTasksTable ({ allTasks }: { allTasks: Array<Task> }) 
             <td className='border border-slate-300'>{task.updated_at}</td>
             <td className='border border-slate-300'>
               <Link
-                href={`/dashboard/task/log/${task.task_id}`}
+                href={`/dashboard/task-status/log/${task.task_id}`}
                 className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
               >
                 view log
@@ -40,7 +40,7 @@ export default function AllTasksTable ({ allTasks }: { allTasks: Array<Task> }) 
             <td className='border border-slate-300'>
               {task.is_completed ? (
                 <Link
-                  href={`/dashboard/task/result/${task.task_id}`}
+                  href={`/dashboard/task-status/result/${task.task_id}`}
                   className='text-blue-500 hover:text-blue-700 hover:underline underline-offset-4'
                 >
                   view result
