@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .datatype-select {
+        @apply px-2;
+        @apply py-1;
+        @apply text-sm;
+        @apply border;
+        @apply rounded-md;
+        @apply focus:border-blue-500;
+        @apply focus:ring-blue-500;
+    }
+}
+
 @layer utilities {
     .inline-svg {
         display: inline;

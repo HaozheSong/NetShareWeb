@@ -20,16 +20,14 @@ export default function NavSection (props: NavSectionProps) {
         {section.links.map(link => {
           const isActive = pathname === link.href
           return (
-            <>
-              <Link
-                href={link.href}
-                className={isActive ? activeLinkClassName : baseLinkClassName}
-                key={link.text}
-              >
-                {link.icon ? link.icon : ''}
-                {link.text}
-              </Link>
-            </>
+            <Link
+              href={link.href}
+              className={isActive ? activeLinkClassName : baseLinkClassName}
+              key={link.text}
+            >
+              {link.icon ? link.icon : ''}
+              {link.text}
+            </Link>
           )
         })}
       </div>
