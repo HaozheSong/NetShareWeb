@@ -2,35 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer base {
-    h1 {
-        @apply text-5xl;
-        @apply font-bold;
+@layer utilities {
+    .inline-svg {
+        display: inline;
+        fill: currentColor;
+        vertical-align: -0.125em;
+        margin-right: 0.5em;
+        height: 1em;
+        width: 1em;
     }
-
-    h2 {
-        @apply text-4xl;
-        @apply font-bold;
-    }
-
-    h3 {
-        @apply text-3xl;
-        @apply font-bold;
-    }
-
-    h4 {
-        @apply text-2xl;
-        @apply font-bold;
-    }
-
-    h5 {
-        @apply text-xl;
-        @apply font-bold;
-    }
-
-    h6 {
-        @apply text-lg;
-        @apply font-bold;
-    }
-
-} */
+}

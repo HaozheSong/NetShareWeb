@@ -1,4 +1,5 @@
-import Link from 'next/link'
+import * as sidebarIcon from './SidebarIcon'
+import NavSection from './SidebarNavSection'
 
 interface Sidebar {
   width: number
@@ -6,11 +7,12 @@ interface Sidebar {
   sections: SidebarSection
 }
 
-interface SidebarSection {
+export interface SidebarSection {
   title: string
-  links: Array<{ text: string; href: string }>
+  links: Array<{ text: string; href: string; icon?: JSX.Element }>
 }
 
+// to make active link work, ensure the href end with a trailing slash
 export const SIDEBAR = {
   width: 300,
   title: 'NetShare',
@@ -18,13 +20,22 @@ export const SIDEBAR = {
     {
       title: 'GENERAL',
       links: [
-        { text: 'Dashboard', href: '/dashboard' },
+        { text: 'Dashboard', href: '/dashboard/', icon: sidebarIcon.dashboard }
       ]
     },
     {
       title: 'ACTIONS',
       links: [
-        { text: 'Task', href: '/dashboard/task' },
+        {
+          text: 'Launch a Task',
+          href: '/dashboard/task/',
+          icon: sidebarIcon.launchTask
+        },
+        {
+          text: 'Task Status',
+          href: '/dashboard/task-status/',
+          icon: sidebarIcon.taskStatus
+        }
       ]
     }
   ]
@@ -46,29 +57,5 @@ export default function Sidebar () {
         ))}
       </div>
     </nav>
-  )
-}
-
-interface NavSectionProps {
-  section: SidebarSection
-}
-
-function NavSection (props: NavSectionProps) {
-  const section = props.section
-  return (
-    <section className='my-2'>
-      <h2 className='my-2'>{section.title}</h2>
-      <div id='sidebar-section-links'>
-        {section.links.map(link => (
-          <Link
-            href={link.href}
-            className='block my-2 px-8 leading-10 rounded-lg  hover:bg-slate-100/30'
-            key={link.text}
-          >
-            {link.text}
-          </Link>
-        ))}
-      </div>
-    </section>
   )
 }
