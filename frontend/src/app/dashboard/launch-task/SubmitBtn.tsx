@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
 
 import configTemplate from './configTemplate'
 import { HeaderInfo } from './StartTaskForm'
@@ -126,8 +127,15 @@ async function sendForm (
     return false
   }
   setSubmitBtnText(submitBtnTextUploading)
+  const csrfToken = Cookies.get('csrftoken')
+  if (!csrfToken) {
+    return false
+  }
   const response = await fetch('/api/task/create/', {
     method: 'POST',
+    headers: new Headers({
+      'X-CSRFToken': csrfToken
+    }),
     body: formData
   })
   const resp_json = await response.json()

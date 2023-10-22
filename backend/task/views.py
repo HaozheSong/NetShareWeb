@@ -15,7 +15,6 @@ from task.models import Task
 results_dir = Path(__file__).parent.joinpath('results')
 
 
-@csrf_exempt
 def create_task(request):
     """
     /api/task/create/
