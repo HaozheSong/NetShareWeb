@@ -17,7 +17,7 @@ const submitBtnTextUploading = (
         className='opacity-25'
         cx='12'
         cy='12'
-        r='10'
+        CSR='10'
         stroke='currentColor'
         strokeWidth='4'
       ></circle>
@@ -127,15 +127,8 @@ async function sendForm (
     return false
   }
   setSubmitBtnText(submitBtnTextUploading)
-  const csrfToken = Cookies.get('csrftoken')
-  if (!csrfToken) {
-    return false
-  }
   const response = await fetch('/api/task/create/', {
     method: 'POST',
-    headers: new Headers({
-      'X-CSRFToken': csrfToken
-    }),
     body: formData
   })
   const resp_json = await response.json()

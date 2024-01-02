@@ -54,6 +54,7 @@ npm install
 ```
 ### Start NextJS Frontend Server with pm2
 ```
+npm install -g pm2
 pm2 start pm2.config.js
 ```
 Frontend is running on port 3000
